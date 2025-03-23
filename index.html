@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prank - Fullscreen Popups</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        img {
+            cursor: pointer;
+            width: 200px;
+        }
+
+        /* 🔴🔵🟢 PRZYWRÓCONE SZYBKIE MIGOTANIE RGB */
+        @keyframes backgroundFlicker {
+            0% { background-color: rgb(255, 0, 0); }
+            20% { background-color: rgb(0, 255, 0); }
+            40% { background-color: rgb(0, 0, 255); }
+            60% { background-color: rgb(255, 255, 0); }
+            80% { background-color: rgb(0, 255, 255); }
+            100% { background-color: rgb(255, 0, 255); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Kliknij obrazek 😈</h1>
+    <img src="przycisk.png" alt="Kliknij mnie" id="playButton">
+    <audio id="sound" src="Gemi2.mp3" loop></audio>
+
+    <script>
+        document.getElementById("playButton").addEventListener("click", function() {
+            let audio = document.getElementById("sound");
+            audio.play();
+            audio.volume = 1.0;
+
+            enableFullscreen();
+            forceMaxVolume();
+            startVibration();
+            blockCloseAttempts();
+
+            // **PRZYWRÓCONE MIGOTANIE EKRANU**
+            document.body.style.animation = 'backgroundFlicker 0.1s infinite';
+
+            // **Efekty pop-up**
+            setInterval(createPopup, 300);
+            setInterval(createEloPopup, 300);
+            setInterval(createCustomPopup, 300);
+            setInterval(createCustomPopup2, 500);
+            setInterval(openNewTab, 1500);
+        });
+
+        // **🔊 Wymusza głośność na max**
+        function forceMaxVolume() {
+            let audio = document.getElementById("sound");
+            audio.volume = 1.0;
+
+            let interval = setInterval(() => {
+                audio.volume = 1.0;
+            }, 100);
+        }
+
+        // **📳 Wibracje telefonu**
+        function startVibration() {
+            if (navigator.vibrate) {
+                setInterval(() => {
+                    navigator.vibrate(200);
+                }, 500);
+            }
+        }
+
+        // **🔒 Blokada zamknięcia strony**
+        function blockCloseAttempts() {
+            window.addEventListener('beforeunload', function(event) {
+                event.preventDefault();
+                event.returnValue = 'Na pewno chcesz opuścić stronę?';
+            });
+
+            window.history.pushState(null, "", window.location.href);
+            window.onpopstate = function () {
+                window.history.pushState(null, "", window.location.href);
+            };
+        }
+
+        // **🔲 Pełny ekran**
+        function enableFullscreen() {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) { 
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { 
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { 
+                document.documentElement.msRequestFullscreen();
+            }
+        }
+
+        // **🎭 Popupy losowo na ekranie**
+        function getRandomPosition() {
+            const x = Math.floor(Math.random() * window.innerWidth);
+            const y = Math.floor(Math.random() * window.innerHeight);
+            return { x, y };
+        }
+
+        function createPopup() {
+            const popup = document.createElement('div');
+            popup.innerHTML = `
+                <h2>Na pewno chcesz opuścić stronę?</h2>
+                <button class="stayButton">Zostań na stronie</button>
+                <button class="exitButton">Opuść stronę</button>
+            `;
+
+            const { x, y } = getRandomPosition();
+            popup.style.top = `${y}px`;
+            popup.style.left = `${x}px`;
+            popup.style.position = "fixed";
+            popup.style.padding = "20px";
+            popup.style.background = "rgba(0,0,0,0.8)";
+            popup.style.color = "red";
+            popup.style.zIndex = "9999";
+            popup.style.borderRadius = "10px";
+
+            document.body.appendChild(popup);
+
+            popup.querySelector('.stayButton').addEventListener('click', () => {
+                popup.style.display = 'none';
+            });
+
+            popup.querySelector('.exitButton').addEventListener('click', () => {
+                popup.querySelector('.exitButton').textContent = 'Nie wyjdziesz XDDD';
+                popup.querySelector('.exitButton').disabled = true;
+            });
+        }
+
+        function createEloPopup() {
+            const eloPopup = document.createElement('div');
+            eloPopup.innerHTML = 'miedziok';
+            eloPopup.style.position = "fixed";
+            eloPopup.style.background = "rgba(255,0,0,0.7)";
+            eloPopup.style.padding = "15px";
+            eloPopup.style.color = "white";
+            eloPopup.style.borderRadius = "10px";
+            eloPopup.style.zIndex = "9999";
+            eloPopup.style.fontSize = "30px";
+
+            const { x, y } = getRandomPosition();
+            eloPopup.style.top = `${y}px`;
+            eloPopup.style.left = `${x}px`;
+
+            document.body.appendChild(eloPopup);
+
+            setTimeout(() => {
+                eloPopup.remove();
+            }, 2000);
+        }
+
+        function createCustomPopup() {
+            const customPopup = document.createElement('div');
+            customPopup.innerHTML = ` 
+                <img src="jajok.png" alt="jajok" style="width: 150px;">
+                <p>jajok</p>
+            `;
+
+            customPopup.style.position = "fixed";
+            customPopup.style.background = "rgba(0,0,0,0.7)";
+            customPopup.style.padding = "10px";
+            customPopup.style.color = "white";
+            customPopup.style.borderRadius = "10px";
+            customPopup.style.zIndex = "10000";
+
+            const { x, y } = getRandomPosition();
+            customPopup.style.top = `${y}px`;
+            customPopup.style.left = `${x}px`;
+
+            document.body.appendChild(customPopup);
+        }
+
+        function createCustomPopup2() {
+            const customPopup2 = document.createElement('div');
+            customPopup2.innerHTML = ` 
+                <img src="chitos.png" alt="chitos" style="width: 150px;">
+                <p>Jonkler</p>
+                <img src="alarm.gif" alt="alarm" style="width: 150px;">
+            `;
+
+            customPopup2.style.position = "fixed";
+            customPopup2.style.background = "rgba(0,0,0,0.7)";
+            customPopup2.style.padding = "10px";
+            customPopup2.style.color = "white";
+            customPopup2.style.borderRadius = "10px";
+            customPopup2.style.zIndex = "10001";
+
+            const { x, y } = getRandomPosition();
+            customPopup2.style.top = `${y}px`;
+            customPopup2.style.left = `${x}px`;
+
+            document.body.appendChild(customPopup2);
+        }
+
+        function openNewTab() {
+            window.open('https://www.google.com/search?q=jeste%C5%9B+jajkiem', '_blank');
+        }
+document.getElementById("playButton").addEventListener("click", function() {
+    let audio = document.getElementById("sound");
+    audio.play();
+    audio.volume = 1.0;
+
+    enableFullscreen();
+    forceMaxVolume();
+    startVibration();
+    blockCloseAttempts();
+
+    // **PRZYWRÓCONE MIGOTANIE EKRANU**
+    document.body.style.animation = 'backgroundFlicker 0.1s infinite';
+
+    // **Efekty pop-up**
+    setInterval(createPopup, 300);
+    setInterval(createEloPopup, 300);
+    setInterval(createCustomPopup, 300);
+    setInterval(createCustomPopup2, 500);
+    setInterval(openNewTab, 1500);
+
+    // **Dodanie GIF Pop-up po kliknięciu**
+    createMovingGifPopup(); // Teraz tworzymy gif, który będzie latał po ekranie
+});
+
+// **🎁 Nowy Pop-Up GIF latający po ekranie z maksymalną liczbą gifów**
+function createMovingGifPopup() {
+    let gifCount = 0; // Licznik gifów na ekranie
+    const maxGifs = 30; // Maksymalna liczba gifów na ekranie
+    let gifArray = []; // Tablica do przechowywania gifów
+
+    // Funkcja do tworzenia nowych gifów, ale tylko jeśli liczba gifów nie osiągnęła 30
+    function createGif() {
+        if (gifCount >= maxGifs) {
+            return; // Jeśli osiągnięto maksymalną liczbę gifów, nie tworzymy nowych
+        }
+
+        let gifPopup = document.createElement('div');
+        gifPopup.classList.add('moving-gif'); // Dodajemy klasę do gifów, aby je łatwo usunąć później
+        gifPopup.innerHTML = `
+            <img src="jp2.gif" alt="Gif" style="width: 150px;">
+        `;
+
+        gifPopup.style.position = "absolute";
+        gifPopup.style.zIndex = "10002";
+
+        const gifImage = gifPopup.querySelector('img');
+        const speed = 2; // Prędkość poruszania
+        let x = Math.random() * window.innerWidth; // Początkowa pozycja
+        let y = Math.random() * window.innerHeight;
+        let dx = speed * (Math.random() > 0.5 ? 1 : -1); // Losowy kierunek ruchu w poziomie
+        let dy = speed * (Math.random() > 0.5 ? 1 : -1); // Losowy kierunek ruchu w pionie
+
+        document.body.appendChild(gifPopup);
+
+        // Funkcja animująca gif
+        function animateGif() {
+            x += dx;
+            y += dy;
+
+            // Sprawdzanie, czy gif uderzył w krawędź ekranu
+            if (x <= 0 || x + gifImage.width >= window.innerWidth) {
+                dx = -dx;  // Odbicie od krawędzi poziomej
+            }
+
+            if (y <= 0 || y + gifImage.height >= window.innerHeight) {
+                dy = -dy;  // Odbicie od krawędzi pionowej
+            }
+
+            gifPopup.style.left = `${x}px`;
+            gifPopup.style.top = `${y}px`;
+
+            // Kontynuuj animację
+            requestAnimationFrame(animateGif);
+        }
+
+        animateGif();  // Uruchamiamy animację
+
+        gifArray.push(gifPopup); // Dodajemy gif do tablicy
+        gifCount++; // Zwiększamy licznik gifów
+    }
+
+    // Tworzymy nowe gify dopóki nie osiągniemy 30 gifów
+    const intervalId = setInterval(() => {
+        if (gifCount < maxGifs) {
+            createGif();
+        } else {
+            clearInterval(intervalId); // Zatrzymujemy tworzenie nowych gifów po osiągnięciu 30
+        }
+    }, 300); // Co 300 ms dodawajemy nowe gify
+}
+
+    </script>
+
+</body>
+</html>
